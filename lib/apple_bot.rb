@@ -6,8 +6,8 @@ module AppleBot
     attr_accessor :user, :password
 
     def initialize
-      self.user = 'sergei.zenchenko@gmail.com'
-      self.password = 'K<6{72AZ?Y3Hu]Er'
+      self.user = 'test'
+      self.password = 'password'
     end
   end
 
