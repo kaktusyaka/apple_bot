@@ -35,16 +35,16 @@ module AppleBot
 
   class ManageUsers
     class << self
-      def get_list
+      def get_user_types_list
         page = AppleBot::Authorization.login
         page = AppleBot::Client.agent.click(page.link_with(text: 'Manage Users'))
         users = page.search('table.lcbox table a')
         return 'No users' if users.count.zero?
-        users = []
+        user_types = []
         page.search('table.lcbox table a').each do |user|
-          users << { name: user.text, url: user.attributes['href'].value }
+          user_types << { name: user.text, url: user.attributes['href'].value }
         end
-        users.to_json
+        user_types.to_json
       end
     end
   end
