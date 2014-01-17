@@ -2,6 +2,23 @@ require "apple_bot/version"
 require 'mechanize'
 
 module AppleBot
+  class Configuration
+    attr_accessor :user, :password
+
+    def initialize
+      self.user = 'sergei.zenchenko@gmail.com'
+      self.password = 'K<6{72AZ?Y3Hu]Er'
+    end
+  end
+
+  def self.configuration
+    @configuration ||=  Configuration.new
+  end
+
+  def self.configure
+    yield(configuration) if block_given?
+  end
+
   class Client
     class << self
       def agent
@@ -13,8 +30,9 @@ module AppleBot
   class Authorization
     class << self
       def login
-        user = 'sergei.zenchenko@gmail.com'
-        pass = 'K<6{72AZ?Y3Hu]Er'
+        user = AppleBot.configuration.user
+        pass = AppleBot.configuration.password
+
         AppleBot::Client.agent.get("https://itunesconnect.apple.com/WebObjects/iTunesConnect.woa") do |page|
           return page unless page.body.include?("Sign In")
           form = page.form_with(name: 'appleConnectForm') do |f|
