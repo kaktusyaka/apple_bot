@@ -3,29 +3,30 @@ require 'mechanize'
 
 module AppleBot
   # Your code goes here...
-  class Login
+  class Authorization
     class << self
       def login
-        @agent = Mechanize.new
         user = 'sergei.zenchenko@gmail.com'
         pass = 'K<6{72AZ?Y3Hu]Er'
-        @agent.get("https://itunesconnect.apple.com/WebObjects/iTunesConnect.woa") do |page|
+        agent.get("https://itunesconnect.apple.com/WebObjects/iTunesConnect.woa") do |page|
+          return page unless page.body.include?("Sign In")
           form = page.form_with(name: 'appleConnectForm') do |f|
             f.theAccountName = user
             f.theAccountPW   = pass
           end.submit
-          if form.body.include?('Manage Your Apps')
-            return form
-          else
-            return false
-          end
+          return form.body.include?('Manage Your Apps') ? form : false
         end
       end
 
       def logout
         page = login
-        result = @agent.click(page.link_with(text: 'Sign Out'))
+        result = agent.click(page.link_with(text: 'Sign Out'))
         return !result.links.include?('Sign Out')
+      end
+
+      private
+      def agent
+        @agent ||= Mechanize.new
       end
     end
   end
